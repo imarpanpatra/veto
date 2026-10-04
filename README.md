@@ -20,6 +20,12 @@ signal in the system.
 
 ![Override, the purchase completes, and the rulebook asks whether it was a mistake](recordings/gif2_regret.gif)
 
+It works the same on anything you type. One message held with the rule quoted
+back, the next one straight through, seconds apart. A Veto that stops
+everything is a Veto nobody keeps.
+
+![One message held with the rule quoted, the next sent untouched](recordings/gif3_message.gif)
+
 ---
 
 ## The problem
