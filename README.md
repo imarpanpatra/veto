@@ -9,6 +9,17 @@ business being an API call.
 
 Built for the [Hacktoberfest Weekend Challenge: Build for a Friend](https://dev.to/challenges/hacktoberfest-weekend-2026-10-01).
 
+![The Veto holding a checkout at 8:49pm, quoting the rule its owner wrote](recordings/gif1_stop.gif)
+
+*A real checkout, stopped by a rule he wrote himself. Judged by gemma3:4b on
+the same laptop. Nothing left the machine.*
+
+Then the part that makes it more than a nag: you can always override it, and
+afterwards it asks whether you regretted it. That answer is the only training
+signal in the system.
+
+![Override, the purchase completes, and the rulebook asks whether it was a mistake](recordings/gif2_regret.gif)
+
 ---
 
 ## The problem
