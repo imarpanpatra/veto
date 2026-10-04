@@ -15,7 +15,8 @@ const RULES = [
   { text: 'I regret messages I send after 1am.', kind: 'message' },
   { text: 'I regret messages where I drag up things from months ago.', kind: 'message' },
   { text: 'I regret replying within five minutes of reading something that stung.', kind: 'message' },
-  { text: 'I regret anything I buy on a night I felt like this.', kind: 'purchase' },
+  { text: 'I regret anything I buy after midnight.', kind: 'purchase' },
+  { text: 'I regret buying things on a night I have had a bad day.', kind: 'purchase' },
 ];
 
 const db = await load();

@@ -82,8 +82,20 @@ app.delete('/api/rules/:id', wrap(async (req, res) =>
  */
 const cache = new Map();
 const CACHE_MAX = 200;
-const keyOf = (draft, kind, rulesVersion) =>
-  `${rulesVersion}:${kind}:${String(draft).trim().toLowerCase().replace(/\s+/g, ' ')}`;
+
+// The hour is part of the key, and it has to be: rules like "I regret anything
+// I buy after midnight" give a different answer for the same words depending on
+// when they are asked. Without this a purchase judged once at 2am stayed held
+// at 2pm, quoting "It is 02:14:00" back at you hours later.
+// Bucketing by hour keeps the type-then-send path on a cache hit, since those
+// are seconds apart, while never reusing a verdict across times of day.
+const keyOf = (draft, kind, rulesVersion, localTime) =>
+  `${rulesVersion}:${kind}:${hourOf(localTime)}:${String(draft).trim().toLowerCase().replace(/\s+/g, ' ')}`;
+
+function hourOf(localTime) {
+  const m = String(localTime || '').match(/(\d{1,2}):/);
+  return m ? Number(m[1]) % 24 : new Date().getHours();
+}
 
 const rulesVersionOf = (rules) => rules.map((r) => r.id + (r.history?.overridden || 0)).join(',');
 
@@ -105,7 +117,7 @@ app.post('/api/judge', wrap(async (req, res) => {
   const applicable = rules.filter((r) => !r.kind || r.kind === kind);
   if (!applicable.length) return res.json({ verdict: 'PASS', rule_id: null, reason: 'no rules' });
 
-  const k = keyOf(draft, kind, rulesVersionOf(applicable));
+  const k = keyOf(draft, kind, rulesVersionOf(applicable), context.localTime);
   let v = cache.get(k);
   const cached = !!v;
 
