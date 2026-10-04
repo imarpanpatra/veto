@@ -64,13 +64,33 @@ function labelOf(el) {
  * would mean the daemon had to accept requests from any site you visit. Going
  * through the worker lets the daemon refuse page origins entirely.
  */
-function send(msg) {
+// 60s is deliberately SHORTER than the daemon's 90s model timeout. If a cold
+// judgement really does take that long, giving up and letting the action
+// through beats freezing the person's checkout button for a minute and a half.
+// The daemon finishes anyway and caches the verdict, so the next attempt is
+// instant rather than lost. Hover-precompute means this path is rarely cold.
+function send(msg, timeoutMs = 60000) {
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage(msg, (reply) => {
-      if (chrome.runtime.lastError) return reject(new Error(chrome.runtime.lastError.message));
-      if (!reply?.ok) return reject(new Error(reply?.error || 'no reply'));
-      resolve(reply);
-    });
+    let settled = false;
+    const finish = (fn, arg) => { if (!settled) { settled = true; clearTimeout(timer); fn(arg); } };
+
+    // A promise that never settles leaves `busy` stuck true, and from then on
+    // every keystroke is swallowed by a gate that will never open: the exact
+    // jammed-shut failure this project is built to avoid. MV3 can tear down the
+    // service worker mid-request, so settling has to be guaranteed here rather
+    // than assumed.
+    const timer = setTimeout(() => finish(reject, new Error('daemon timeout')), timeoutMs);
+
+    try {
+      chrome.runtime.sendMessage(msg, (reply) => {
+        if (chrome.runtime.lastError) return finish(reject, new Error(chrome.runtime.lastError.message));
+        if (!reply?.ok) return finish(reject, new Error(reply?.error || 'no reply'));
+        finish(resolve, reply);
+      });
+    } catch (e) {
+      // Throws synchronously if the extension context was invalidated by a reload.
+      finish(reject, e);
+    }
   });
 }
 
@@ -107,6 +127,35 @@ document.addEventListener('input', (ev) => {
     lastPrecomputed = text;
     ask(text, 'message', true).catch(() => {});
   }, 900);
+}, true);
+
+/* A Buy button has no typing phase.
+ *
+ * Messages get judged while they are written, so Enter resolves instantly. A
+ * checkout button does not: the first the Veto hears of it is the click, and
+ * then the person stares at nothing for twenty seconds. Since the whole point
+ * of this build is Akshay's 2am purchases, that is the path that most needed
+ * fixing.
+ *
+ * So the hover is the typing. When the pointer lands on something shaped like
+ * a commit button, the verdict is computed and cached before the click lands.
+ */
+let hoverTimer = null;
+let lastHovered = '';
+
+document.addEventListener('pointerover', (ev) => {
+  const btn = ev.target.closest?.('button, [role="button"], input[type="submit"], a[href]');
+  if (!btn) return;
+  const label = labelOf(btn);
+  // Message composers are already covered by the typing path above.
+  if (!BUY_HINTS.test(label)) return;
+  const draft = `[purchase] ${label.trim()}`;
+  if (draft === lastHovered) return;
+  clearTimeout(hoverTimer);
+  hoverTimer = setTimeout(() => {
+    lastHovered = draft;
+    ask(draft, 'purchase', true).catch(() => {});
+  }, 250);
 }, true);
 
 async function intercept(ev, draft, kind, replay) {

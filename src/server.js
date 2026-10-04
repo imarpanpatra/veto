@@ -27,15 +27,35 @@ app.use(express.json({ limit: '256kb' }));
  */
 const isExtension = (o) => /^(chrome|moz)-extension:\/\//.test(o);
 
-// The dashboard's own origin, derived from the request rather than hardcoded:
-// locally that is http://127.0.0.1:4777, but the hosted demo is served from
-// its platform hostname and must still be able to POST to itself.
+// The dashboard's own origin. Derived from the request so the hosted demo can
+// POST to itself under whatever hostname the platform gives it.
 const isSelf = (req, o) => {
   const host = req.get('host');
   return !!host && (o === `http://${host}` || o === `https://${host}`);
 };
 
+/* Host allowlist, which is what stops DNS rebinding.
+ *
+ * isSelf() trusts the Host header, and Host is attacker-controlled. A page on
+ * evil.example whose DNS points at 127.0.0.1 reaches this server with
+ * Host: evil.example AND Origin: http://evil.example -- they match, isSelf says
+ * yes, and the rulebook is readable by a website again. Checking the Origin
+ * alone cannot catch that, because both halves come from the attacker.
+ *
+ * Locally the only legitimate Host is loopback, so anything else is refused
+ * before the origin is even considered. The hosted demo holds no real data and
+ * is reached by its platform hostname, so it opts out.
+ */
+const LOCAL_HOSTS = new Set([
+  `127.0.0.1:${PORT}`, `localhost:${PORT}`, `[::1]:${PORT}`,
+  '127.0.0.1', 'localhost', '[::1]',
+]);
+
 app.use((req, res, next) => {
+  if (!DEMO && !LOCAL_HOSTS.has(String(req.get('host') || '').toLowerCase())) {
+    return res.status(403).json({ error: 'The Veto is reachable on loopback only.' });
+  }
+
   const origin = req.get('origin');
 
   // No Origin header: same-origin GET from the dashboard, or a local script.
@@ -92,9 +112,18 @@ const CACHE_MAX = 200;
 const keyOf = (draft, kind, rulesVersion, localTime) =>
   `${rulesVersion}:${kind}:${hourOf(localTime)}:${String(draft).trim().toLowerCase().replace(/\s+/g, ' ')}`;
 
+// The clock arrives as toLocaleTimeString(), which in most locales is 12-hour
+// with a meridiem: "8:49:38 PM". Reading the leading number alone put 8pm and
+// 8am in the same bucket, so an evening verdict could be replayed the next
+// morning. The meridiem has to be parsed or the hour is worthless.
 function hourOf(localTime) {
-  const m = String(localTime || '').match(/(\d{1,2}):/);
-  return m ? Number(m[1]) % 24 : new Date().getHours();
+  const s = String(localTime || '').trim();
+  const m = s.match(/(\d{1,2}):/);
+  if (!m) return new Date().getHours();
+  let h = Number(m[1]) % 24;
+  if (/\bp\.?m\.?\b/i.test(s) && h < 12) h += 12;   // 8 PM  -> 20
+  if (/\ba\.?m\.?\b/i.test(s) && h === 12) h = 0;   // 12 AM -> 0
+  return h;
 }
 
 const rulesVersionOf = (rules) => rules.map((r) => r.id + (r.history?.overridden || 0)).join(',');
