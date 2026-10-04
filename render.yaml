@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: the-veto
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node src/server.js
+    envVars:
+      # The hosted demo has no GPU, so it runs the keyword stub.
+      # The real Veto runs gemma3:4b locally. README says so plainly.
+      - key: VETO_DEMO
+        value: "1"
+      - key: VETO_DATA
+        value: /tmp/veto.json

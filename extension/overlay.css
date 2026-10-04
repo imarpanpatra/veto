@@ -1,0 +1,24 @@
+.veto-root{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;
+  justify-content:center;background:rgba(10,12,16,.72);backdrop-filter:blur(3px);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+.veto-card{background:#15181e;color:#e9edf3;max-width:440px;width:calc(100% - 48px);
+  padding:28px 28px 20px;border-radius:14px;border:1px solid #2a2f3a;
+  box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.veto-tag{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#e2574c;
+  font-weight:700;margin-bottom:14px}
+.veto-because{font-size:19px;line-height:1.45;margin:0 0 14px;font-weight:500}
+.veto-rule{font-size:13px;color:#9aa4b2;margin:0 0 14px;line-height:1.5}
+.veto-rule em{color:#c8d0dc;font-style:normal}
+.veto-q{font-size:15px;color:#f0c674;margin:0 0 10px;line-height:1.45}
+.veto-answer{width:100%;box-sizing:border-box;background:#0e1116;border:1px solid #2a2f3a;
+  color:#e9edf3;border-radius:8px;padding:10px 12px;font-size:14px;margin-bottom:14px}
+.veto-answer:focus{outline:none;border-color:#4a5568}
+.veto-actions{display:flex;gap:10px;margin-top:4px}
+.veto-actions button{flex:1;padding:11px 14px;border-radius:9px;font-size:14px;
+  font-weight:600;cursor:pointer;border:1px solid transparent;font-family:inherit}
+.veto-wait{background:#e9edf3;color:#15181e}
+.veto-wait:hover{background:#fff}
+.veto-override{background:transparent;color:#8b94a3;border-color:#2a2f3a}
+.veto-override:disabled{opacity:.45;cursor:not-allowed}
+.veto-override:not(:disabled):hover{color:#e2574c;border-color:#e2574c}
+.veto-foot{font-size:11px;color:#636c7a;margin:16px 0 0;text-align:center}

@@ -1,0 +1,25 @@
+{
+  "name": "veto",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A local open-weight model whose only job is to stop you.",
+  "license": "MIT",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "check": "node src/guardtest.js && node src/storetest.js",
+    "seed": "node src/seed.js",
+    "check:model": "node src/modeltest.js",
+    "check:guard": "node src/guardtest.js",
+    "check:stability": "node src/stability.js",
+    "check:store": "node src/storetest.js",
+    "check:e2e": "node src/selftest.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

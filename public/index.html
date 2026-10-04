@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Veto</title><link rel="stylesheet" href="styles.css">
+</head><body>
+<header>
+  <div class="brand"><span class="mark"></span> The Veto</div>
+  <p class="tag">A local open-weight model whose only job is to stop you.</p>
+  <div class="status" id="status"></div>
+</header>
+
+<main>
+  <section>
+    <h2>Try it</h2>
+    <p class="hint">Type what you are about to send. It is judged against your rules below, and nothing else.</p>
+    <textarea id="draft" rows="3" placeholder="remember when you ditched me months ago? classic you."></textarea>
+    <button id="judge">Judge this</button>
+    <div id="verdict"></div>
+  </section>
+
+  <section>
+    <h2>Your rules <span class="sub">written when you were calm</span></h2>
+    <p class="hint">Not policies. Sentences about yourself, in your own words, starting &ldquo;I regret&hellip;&rdquo;.</p>
+    <form id="addRule"><input id="ruleText" placeholder="I regret messages I send after 1am." maxlength="300"><button>Add</button></form>
+    <ul id="rules" class="rules"></ul>
+  </section>
+
+  <section id="pendingWrap" hidden>
+    <h2>Waiting on your hindsight <span class="sub">the part that makes it learn</span></h2>
+    <p class="hint">You overrode the Veto. Only you can say, now, whether it was right.</p>
+    <ul id="pending" class="events"></ul>
+  </section>
+
+  <section>
+    <h2>What it stopped</h2>
+    <ul id="events" class="events"></ul>
+  </section>
+</main>
+<footer>Judged on your own machine. No API key, no account, nothing leaves this device.</footer>
+<script src="app.js"></script></body></html>

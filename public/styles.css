@@ -1,0 +1,43 @@
+:root{--bg:#0e1116;--card:#15181e;--line:#262b35;--ink:#e9edf3;--dim:#8b94a3;--red:#e2574c;--amber:#f0c674;--green:#4ade80}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:48px 24px 28px;max-width:720px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:700;letter-spacing:-.01em}
+.mark{width:12px;height:12px;border-radius:3px;background:var(--red);display:inline-block}
+.tag{color:var(--dim);margin:8px 0 18px}
+.status{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--dim)}
+.status b{color:var(--ink)}
+main{max-width:720px;margin:0 auto;padding:0 24px 64px}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:20px}
+h2{font-size:15px;margin:0 0 4px;letter-spacing:.02em}
+.sub{font-weight:400;color:var(--dim);font-size:12.5px;margin-left:6px}
+.hint{color:var(--dim);font-size:13px;margin:0 0 14px}
+textarea,input{width:100%;background:#0e1116;border:1px solid var(--line);color:var(--ink);
+  border-radius:9px;padding:11px 13px;font:inherit;font-size:14px}
+textarea:focus,input:focus{outline:none;border-color:#3b4452}
+button{background:var(--ink);color:#15181e;border:0;border-radius:9px;padding:10px 18px;
+  font:inherit;font-weight:600;font-size:14px;cursor:pointer;margin-top:12px}
+button:hover{background:#fff}
+button.ghost{background:transparent;color:var(--dim);border:1px solid var(--line);margin:0}
+button.ghost:hover{color:var(--ink);border-color:#3b4452}
+form#addRule{display:flex;gap:10px;align-items:flex-start}
+form#addRule input{flex:1}
+form#addRule button{margin-top:0;padding:11px 18px}
+ul{list-style:none;margin:14px 0 0;padding:0}
+.rules li{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;
+  padding:12px 0;border-top:1px solid var(--line);font-size:14px}
+.rules .meta{color:var(--dim);font-size:12px;margin-top:3px}
+.events li{padding:13px 0;border-top:1px solid var(--line);font-size:13.5px}
+.events .ex{color:var(--dim);font-style:italic}
+.events .why{margin-top:3px}
+.events .act{display:flex;gap:8px;margin-top:9px}
+.v{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:2px 7px;border-radius:4px;margin-right:8px}
+.v.HOLD{background:rgba(226,87,76,.15);color:var(--red)}
+.v.ASK{background:rgba(240,198,116,.15);color:var(--amber)}
+.v.PASS{background:rgba(74,222,128,.13);color:var(--green)}
+#verdict{margin-top:16px}
+.card{border:1px solid var(--line);border-radius:10px;padding:16px;background:#0e1116}
+.card .because{font-size:16px;margin:8px 0 0}
+.card .rule{color:var(--dim);font-size:12.5px;margin-top:8px}
+footer{text-align:center;color:#5a6270;font-size:12px;padding:0 24px 56px}
