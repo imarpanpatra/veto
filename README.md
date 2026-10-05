@@ -1,6 +1,8 @@
 # The Veto
 
-**A local open-weight model whose only job is to stop you.**
+**My friend can't stop buying things at 2am. So I built an AI that can.**
+
+A local open-weight model whose only job is to stop you.
 
 Every AI tool in your life is trying to help you do the thing. This one is the
 only one trying to stop you, and it runs entirely on your own laptop, because
